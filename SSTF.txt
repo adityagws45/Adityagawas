@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+int no_req, head, head1, distance;
+int disc_req[100], finish[100];
+
+void input() {
+    int i;
+    printf("Enter the number of disk requests: ");
+    scanf("%d", &no_req);
+    printf("Enter the disk request sequence: ");
+    for (i = 0; i < no_req; i++) {
+        scanf("%d", &disc_req[i]);
+    }
+    printf("Enter the initial head position: ");
+    scanf("%d", &head1);
+}
+
+void sstf() {
+    int min, diff;
+    int pending = no_req;
+    int i, total_distance = 0, index;
+    head = head1;
+
+    // Initialize finish array to track completed requests
+    for (i = 0; i < no_req; i++) {
+        finish[i] = 0;
+    }
+
+    printf("Sequence of head movements: %d => ", head);
+
+    while (pending > 0) {
+        min = 999;  // Set min to a high value
+
+        // Find the nearest request
+        for (i = 0; i < no_req; i++) {
+            diff = abs(head - disc_req[i]);
+            if (finish[i] == 0 && diff < min) {
+                min = diff;
+                index = i;  // Store the index of the nearest request
+            }
+        }
+
+        finish[index] = 1;  // Mark this request as completed
+        total_distance += abs(head - disc_req[index]);  // Calculate the distance
+        head = disc_req[index];  // Move the head to the new position
+        pending--;
+
+        // Print the current head position
+        printf("%d => ", head);
+    }
+
+    printf("End\n");
+    printf("Total distance traveled = %d\n", total_distance);
+}
+
+int main() {
+    input();  // Get user input
+    sstf();   // Execute the SSTF algorithm
+    return 0;
+}
